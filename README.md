@@ -5,7 +5,8 @@ Flutter iOS应用安全开发小指南：
 2. 遵循Flutter[官方建议](https://flutter.dev/security)，持续观察与更新Flutter和依赖的版本；
 3. 目前尚未发现对Flutter应用的有效逆向，因此在满足通用的开发规范时可暂缓考虑对Dart的额外安全措施，但需持续关注；
 4. 关注Flutter与iOS通讯通道plugin传递数据时的安全，可对敏感信息进行加密存储；
-5. 关注Flutter中其他[OC实现类](https://api.flutter.dev/objcdoc/Classes.html)，防止泄露隐私数据。
+5. 关注Flutter中其他[OC实现类](https://api.flutter.dev/objcdoc/Classes.html)，防止泄露隐私数据；
+6. [OWASP Mobile Security Testing Guide](https://github.com/OWASP/owasp-mstg)正在进行Flutter相关的[安全实践](https://drive.google.com/file/d/1wHK3VI1cU1xmYrCu9yb5OHKUEeLIPSkC/view)梳理，可持续关注。
 
 ## Flutter安全实践
 
