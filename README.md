@@ -3,7 +3,7 @@
 Flutter iOS应用安全开发小指南：
 1. 遵循已有的iOS开发安全标准，可参考[OWASP Mobile Application Security Verification Standard](https://github.com/OWASP/owasp-masvs)；
 2. 遵循Flutter[官方建议](https://flutter.dev/security)，持续观察与更新Flutter和依赖的版本；
-3. Flutter将Dart语言编译成iOS汇编代码，还未发现对其的有效逆向；因此在满足通用的开发规范时可暂缓考虑对Dart的额外安全措施，但需持续关注；
+3. 目前尚未发现对Flutter应用的有效逆向，因此在满足通用的开发规范时可暂缓考虑对Dart的额外安全措施，但需持续关注；
 4. 关注Flutter与iOS通讯通道plugin传递数据时的安全，可对敏感信息进行加密存储；
 5. 关注Flutter中其他[OC实现类](https://api.flutter.dev/objcdoc/Classes.html)，防止泄露隐私数据。
 
@@ -34,8 +34,7 @@ Runner.app/
 在`Frameworks`文件夹中，还包含Flutter plugin的bundle, 如笔者的demo app中使用的[`flutter_secure_storage.framwork`](https://github.com/mogol/flutter_secure_storage)，[`flutter_webview_plugin.framwork`](https://github.com/fluttercommunity/flutter_webview_plugin)。
 ## Flutter 逆向
 
-Flutter将Dart语言编译成iOS的汇编代码，该过程目前没有公开的资料，因此即使没有代码混淆，Flutter应用很难逆向。
-目前笔者尚未发现Flutter APP逆向的工具。在[Flutter APP 逆向](https://blog.tst.sh/reverse-engineering-flutter-apps-part-1/)此篇文章中，作者以`Hello world`代码块为例子，分析了Dart sdk、快照剖析、RawOject，为Flutter APP逆向提供了思路。
+Flutter将Dart语言编译成原生的arm代码，该过程目前没有公开的资料（Flutter iOS编译可参考[深入理解 Flutter 的编译原理与优化](https://102.alibaba.com/detail/?id=141)，同时笔者尚未发现针对Flutter APP逆向的工具，该逆向生态尚不完善，针对Flutter APP的逆向存在难度。在[Flutter APP 逆向](https://blog.tst.sh/reverse-engineering-flutter-apps-part-1/)此篇文章中，作者以`Hello world`代码块为例子，分析了Dart sdk、快照剖析、RawOject，为Flutter APP逆向提供了思路。
 
 鉴于目前逆向Flutter存在挑战，目前Dart语言编写的代码安全性较高，难以分析其业务代码逻辑，因此在满足通用的开发规范时可暂缓考虑对Dart的额外安全措施，但需持续关注。
 
