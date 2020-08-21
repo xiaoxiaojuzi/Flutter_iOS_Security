@@ -9,9 +9,9 @@ Flutter iOS应用安全开发小指南：
 
 ## Flutter安全实践
 
-Flutter是谷歌的移动UI框架，可以快速在iOS和Android上构建高质量的原生用户界面。目前google、ebay、咸鱼等已采用其技术进行应用开发。如果我们需要采用Flutter技术框架，在开发过程中，需要关注哪些安全问题呢？
+Flutter是谷歌的移动、web、desktop UI框架，其可以快速在iOS和Android上构建高质量的原生APP。目前google、ebay、咸鱼等已采用其技术进行应用开发。如果我们需要采用Flutter技术框架，在开发过程中，需要关注哪些安全问题呢？
 
-在移动原生安全方面，[OWASP Mobile Application Security Verification Standard](https://github.com/OWASP/owasp-masvs)定义了一个移动安全开发基准线，其介绍了在数据存储、网络通讯、认证授权等方面移动应用安全实践。在原生开发过程中，可参考其保准，保证应用安全。在Flutter应用中也可遵循相关标准，保障安全。如采用HTTPS进行通讯，不在UserDefaults中存储敏感信息，校验Universal links参数等。
+在移动原生安全方面，[OWASP Mobile Application Security Verification Standard](https://github.com/OWASP/owasp-masvs)定义了一个移动安全开发基准线，其介绍了在数据存储、网络通讯、认证授权等方面移动应用安全实践。在原生开发过程中，可参考其标准，保证应用安全。在Flutter应用中也可遵循相关标准，保障安全。如采用HTTPS进行通讯，不在UserDefaults中存储敏感信息，校验Universal links参数等。
 
 在Flutter的[官方文档](https://flutter.dev/security)中，给出了Flutter应用层的安全实践。其建议采用持续关注更新Flutter版本和相关依赖版本，以防止针对老版本已知安全漏洞的攻击。
 
@@ -30,15 +30,19 @@ Runner.app/
 ```
 `Runner`为Flutter的运行引擎，其为程序运行的入口，但其不包含应用业务代码。
 `Flutter.framework`为Flutter bundle，也不包含业务代码。
- `App.framework`为业务Dart代码编译后产物，因此该文件是分析的重点。
+ `App.framework`为Dart业务代码编译后产物，因此该文件是分析的重点。
 在`Frameworks`文件夹中，还包含Flutter plugin的bundle, 如笔者的demo app中使用的[`flutter_secure_storage.framwork`](https://github.com/mogol/flutter_secure_storage)，[`flutter_webview_plugin.framwork`](https://github.com/fluttercommunity/flutter_webview_plugin)。
 ## Flutter 逆向
 
-Flutter将Dart语言编译成原生的arm代码，该过程目前没有公开的资料（Flutter iOS编译可参考[深入理解 Flutter 的编译原理与优化](https://102.alibaba.com/detail/?id=141)，同时笔者尚未发现针对Flutter APP逆向的工具，该逆向生态尚不完善，针对Flutter APP的逆向存在难度。在[Flutter APP 逆向](https://blog.tst.sh/reverse-engineering-flutter-apps-part-1/)此篇文章中，作者以`Hello world`代码块为例子，分析了Dart sdk、快照剖析、RawOject，为Flutter APP逆向提供了思路。
+Flutter将Dart语言编译成原生的arm代码，细节可参考[深入理解 Flutter 的编译原理与优化](https://102.alibaba.com/detail/?id=141)，[Flutter机器码生成gen_snapshot](http://gityuan.com/2019/09/21/flutter_gen_snapshot/)。
+使用MachOView查看dart代码最终得到的`App.framework`中符号表如下，其中不包含有用业务函数信息。
+![picture 1](images/db4ef2b7dbc76ad6e3862f9ff608267069f5c1f1572e3c1e8e8ef0ba7edc3689.png)  
 
-鉴于目前逆向Flutter存在挑战，目前Dart语言编写的代码安全性较高，难以分析其业务代码逻辑，因此在满足通用的开发规范时可暂缓考虑对Dart的额外安全措施，但需持续关注。
+同时笔者尚未发现针对Flutter APP逆向的工具，该逆向生态尚不完善，针对Flutter APP的逆向存在难度。在[Flutter APP 逆向](https://blog.tst.sh/reverse-engineering-flutter-apps-part-1/)此篇文章中，作者以`Hello world`代码块为例子，分析了Dart sdk、快照剖析、RawOject，为Flutter APP逆向提供了思路。
 
-在分析Flutter架构过程中，笔者发现可通过Flutter Plugin可以窥探到应用程序相关的有用信息，因此需要关注该通道的合理使用。
+鉴于目前逆向Flutter存在挑战，难以分析其业务代码逻辑，因此在满足通用的开发规范时可暂缓考虑对Dart的额外安全措施，但需持续关注。
+
+与此同时在分析Flutter架构过程中，笔者发现可通过Flutter Plugin可以窥探到应用程序相关的有用信息，因此需要关注该通道的合理使用。
 
 ### Flutter Plugin
 
@@ -109,7 +113,7 @@ function traceFlutterMethodCall() {
     }
 }
 ```
-`FlutterMethodCall`为类名，`"+ methodCallWithMethodName:arguments:"`为方法名。该信息可在Flutter的[官方文档](https://api.flutter.dev/objcdoc/Classes/FlutterMethodCall.html)中找到，也可通过frida工具，遍历所有flutter相关的函数得到。
+`FlutterMethodCall`为类名，`"+ methodCallWithMethodName:arguments:"`为方法名。该信息可在Flutter的[官方文档](https://api.flutter.dev/objcdoc/Classes/FlutterMethodCall.html)中找到；也可通过frida工具，遍历所有flutter相关的函数得到；也可使用MachOView等工具查看。
 
 笔者Demo app中，采用[`flutter_secure_storage`](https://github.com/mogol/flutter_secure_storage) Plugin, 实现向keychain的write操作，代码如下：
 ```dart
