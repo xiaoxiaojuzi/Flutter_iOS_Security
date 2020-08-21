@@ -114,14 +114,14 @@ function traceFlutterMethodCall() {
 
 笔者Demo app中，采用[`flutter_secure_storage`](https://github.com/mogol/flutter_secure_storage) Plugin, 实现向keychain的write操作，代码如下：
 ```dart
-SecureStorage.set("securestorageitem.masterkey", "AF4ItDx/2aUDKDk/s+Mdi3aGUJ0wTmMRBvMzMEg/yor6dGiQUEPDypQx5vNnfa+/")
+SecureStorage.set("key", "AF4ItDx/2aUDKDk/s+Mdi3aGUJ0wTmMRBvMzMEg/yor6dGiQUEPDypQx5vNnfa+/")
 ```
 通过frida hook `FlutterMethodCall`, 输出如下：
 ```
 FlutterMethodCall:methodCallWithMethodName:arguments:
 method: write
 args: {
-    key = "securestorageitem.masterkey";
+    key = "key";
     options = "<null>";
     value = "AF4ItDx/2aUDKDk/s+Mdi3aGUJ0wTmMRBvMzMEg/yor6dGiQUEPDypQx5vNnfa+/";
 }
